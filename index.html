@@ -209,7 +209,7 @@ function nowPT() {
 }
 function currentSlot() {
   const n = nowPT();
-  const s = slots.find(s => n < s.min + 5);
+  const s = slots.find(s => n < s.min + 30);
   return s || slots[slots.length - 1];
 }
 
