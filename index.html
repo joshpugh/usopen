@@ -154,6 +154,16 @@ main .wrap { padding-block: 16px 40px; }
   .ladders { gap: 40px; }
 }
 @media (min-width: 1500px) { body { font-size: 18px; } .kv { font-size: 30px; } .pname { font-size: 40px; } .dstory { font-size: 21px; } }
+
+/* Overflow guards for long team names */
+.res { white-space: normal; }
+.tape > div, .kv, .kl, .pname, .tn, .watch li, .say li, .notes li, .story li, .dstory li, .tcard h3, .ladder-row .nm, .lres .res { overflow-wrap: anywhere; min-width: 0; }
+.frow { grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr); }
+.kpis { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.kpi { min-width: 0; }
+.panel > *, .pbody > *, .tbody > *, .col > *, .dash > * { min-width: 0; }
+main, main .wrap, .grid, .dgrid { min-width: 0; max-width: 100%; }
+html, body { overflow-x: hidden; }
 </style>
 </head>
 <body>
