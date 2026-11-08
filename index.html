@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Court 1 Call Sheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} [hidden]{display:none!important}
+
+/* Layout: quiet sticky game strip over a two-column tale of the tape; one column on phones. */
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --ink: #18202b; --muted: #6b7482; --line: #e3e6ea;
+  --a: #2457a6; --b: #b4511f; --win: #1d7a45; --loss: #b8382f; --draw: #94700f;
+  --font: "Barlow", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0e1319; --surface: #151c24; --ink: #e6eaef; --muted: #8d97a4; --line: #242e39; --a: #7ea8ec; --b: #ec9a6c; --win: #5cc58a; --loss: #ee7d73; --draw: #d9b35a; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0e1319; --surface: #151c24; --ink: #e6eaef; --muted: #8d97a4; --line: #242e39; --a: #7ea8ec; --b: #ec9a6c; --win: #5cc58a; --loss: #ee7d73; --draw: #d9b35a; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; font-weight: 400; line-height: 1.45; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); max-width: 1100px; margin: 0 auto; }
+b, strong { font-weight: 600; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg); border-bottom: 1px solid var(--line); }
+.bar .wrap { padding-block: 8px; }
+.pills { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.pills::-webkit-scrollbar { display: none; }
+.pill { flex: 0 0 auto; min-height: 44px; padding: 4px 10px; border-radius: 8px; border: 0; background: transparent; color: var(--ink); text-align: left; cursor: pointer; font: inherit; line-height: 1.2; }
+.pill .pt { display: block; font-size: 14px; font-variant-numeric: tabular-nums; }
+.pill .ps { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.pill.done { opacity: .5; }
+.pill.now .pt::after { content: " ●"; color: var(--loss); font-size: 9px; vertical-align: 2px; }
+.pill[aria-current="true"] { background: var(--ink); color: var(--bg); opacity: 1; }
+.pill[aria-current="true"] .ps { color: var(--bg); opacity: .75; }
+.pill:focus-visible, .seg button:focus-visible, .ladder-row:focus-visible { outline: 2px solid var(--a); outline-offset: 2px; }
+
+main .wrap { padding-block: 16px 40px; }
+.head { margin-bottom: 10px; }
+.eyebrow { font-size: 13px; color: var(--muted); }
+.round { font-size: 15px; }
+.matchup { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: baseline; gap: 10px; margin: 6px 0 14px; }
+.matchup .tn { font-size: 22px; font-weight: 600; line-height: 1.15; min-width: 0; }
+.matchup .tn small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); }
+.matchup .ta { color: var(--a); }
+.matchup .tb { color: var(--b); text-align: right; }
+.vs { color: var(--muted); font-size: 13px; }
+
+.pick { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 8px; align-items: center; margin: 4px 0 6px; }
+.pick-lbl { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.pick-row { display: contents; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; min-width: 0; }
+.seg button { flex: 1 1 0; min-width: 0; min-height: 40px; border: 0; background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; padding: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg.sa button[aria-pressed="true"] { background: var(--a); color: #fff; }
+.seg.sb button[aria-pressed="true"] { background: var(--b); color: #fff; }
+
+.grid { display: grid; gap: 22px; }
+@media (min-width: 820px) { .grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 32px; align-items: start; } }
+.col { display: grid; gap: 22px; min-width: 0; }
+.card { min-width: 0; }
+.card h3 { margin: 0 0 6px; font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+.tape { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); border-top: 1px solid var(--line); }
+.tape > div { padding: 6px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.tape .va { text-align: right; padding-right: 12px; }
+.tape .vb { text-align: left; padding-left: 12px; }
+.tape .lb { text-align: center; font-size: 12px; color: var(--muted); padding: 7px 4px 0; max-width: 8rem; line-height: 1.2; }
+.tape .v { font-variant-numeric: tabular-nums; }
+.res { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.res b { display: inline-block; width: 1.1em; }
+.res.W b { color: var(--win); } .res.L b { color: var(--loss); } .res.D b { color: var(--draw); }
+.nil { color: var(--muted); }
+
+.form { display: grid; gap: 6px; }
+.frow { display: grid; grid-template-columns: 6.5rem 1fr; align-items: center; gap: 8px; }
+.frow .fn { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.frow.a .fn { color: var(--a); } .frow.b .fn { color: var(--b); }
+.dots { display: flex; flex-wrap: wrap; gap: 3px; }
+.dots span { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 600; color: #fff; }
+.dots .W { background: var(--win); } .dots .L { background: var(--loss); } .dots .D { background: var(--draw); }
+.dots .sun { outline: 1.5px solid var(--ink); outline-offset: 1px; }
+
+.story { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.tcard h3 { color: var(--ink); font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none; padding-bottom: 4px; border-bottom: 2px solid currentColor; }
+.tcard.a h3 { color: var(--a); } .tcard.b h3 { color: var(--b); }
+.tbody { display: grid; gap: 10px; }
+.sub { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.watch, .say { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+.watch .why { color: var(--muted); }
+.say .ph { font-style: italic; }
+.notes { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+.soon-card { display: grid; gap: 6px; padding-top: 8px; }
+.soon-card .big { font-size: 20px; font-weight: 600; }
+.soon-card p { margin: 0; color: var(--muted); }
+
+.ladders { display: grid; gap: 28px; }
+@media (min-width: 820px) { .ladders { grid-template-columns: 1fr 1fr; align-items: start; } }
+.ladder-head, .ladder-row { display: grid; grid-template-columns: 1.6rem minmax(0,1fr) 4.2rem 2.8rem 2.4rem; gap: 6px; align-items: center; }
+.ladder-head { padding: 4px 0; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.ladder-head span:nth-child(n+3) { text-align: right; }
+.ladder-row { width: 100%; min-height: 40px; padding: 6px 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
+.ladder-row .pos { color: var(--muted); font-variant-numeric: tabular-nums; }
+.ladder-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ladder-row .num { text-align: right; font-variant-numeric: tabular-nums; }
+.ladder-row .gd { color: var(--muted); }
+.ladder-row .pts { font-weight: 600; }
+.lres { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 8px 0 10px 1.6rem; border-bottom: 1px solid var(--line); font-size: 14px; }
+.lres .opp { color: var(--muted); }
+
+.embed { position: relative; width: 100%; aspect-ratio: 1557 / 80; overflow: hidden; background: #000; }
+.embed iframe { position: absolute; top: 0; left: 0; width: 1557px; height: 80px; border: 0; transform-origin: 0 0; transform: scale(var(--sbs, 1)); }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="embed" id="embed"><iframe src="https://keepthescore.com/board/ydsdbqxxnznkr?public=true" title="Live scoreboard and clock" scrolling="no"></iframe></div>
+  <script>(function(){var e=document.getElementById('embed');function fit(){e.style.setProperty('--sbs',e.clientWidth/1557)}fit();window.addEventListener('resize',fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(e);})();</script>
+  <div class="wrap">
+    <nav class="pills" id="pills" aria-label="Court 1 games"></nav>
+  </div>
+</header>
+<main><div class="wrap" id="view"></div></main>
+
+<script>
+const DATA = {"games": [{"time": "8:00", "min": 480, "no": 1, "title": "8:00 · Court 1 · Game 1: Denver Blizzards Force v Chicago Ladies", "round": "Ladies Cup quarterfinal, 4th v 5th", "teams": ["Denver Blizzards Force", "Chicago Ladies"], "rows": [{"label": "Standing", "vals": ["4th, 26 pts", "5th, 20 pts"]}, {"label": "Record", "vals": ["W8 D1 L2", "W6 D1 L4"]}, {"label": "Goals", "vals": ["83 for, 67 against (+16)", "112 for, 93 against (+19)"]}, {"label": "Head to head", "vals": ["D 10-10", "D 10-10"]}, {"label": "v SF Stars", "vals": ["W 5-3", "L 6-17"]}, {"label": "v Heat", "vals": ["L 3-16", "L 0-16"]}, {"label": "v Texas", "vals": ["L 4-9", "L 7-12"]}, {"label": "v Alberta", "vals": ["W 6-5", "W 9-6"]}, {"label": "v Flare", "vals": ["W 8-4", "L 8-9"]}, {"label": "v Tampa Bay", "vals": ["W 8-6", "W 12-6"]}, {"label": "v Fury", "vals": ["W 9-1", "W 10-6"]}, {"label": "v Silver Foxes", "vals": ["W 10-5", "W 15-6"]}, {"label": "v Allyanze", "vals": ["W 9-6", "W 14-4"]}, {"label": "v Dorchester", "vals": ["W 11-2", "W 21-1"]}, {"label": "Watch", "vals": ["Louise (sharp shooter), Steph (defensive pressure), Leah (calm leader)", ""]}, {"label": "Say it", "vals": ["Jumanne = \"You-ma\"", ""]}], "form": [{"team": "Denver Blizzards Force", "seq": ["D", "W", "W", "W", "W", "W", "W", "W", "W", "L", "L"]}, {"team": "Chicago Ladies", "seq": ["D", "L", "L", "W", "L", "L", "W", "W", "W", "W", "W"]}], "story": ["Force were the only team to beat top seed SF Stars (5-3)", "Chicago finished Saturday on five straight wins"], "notes": {"Denver Blizzards Force": ["Play outdoors year-round, even in winter, at Walker-Branch Park", "Logo has seven seven-sided snowflakes, one per player, designed by Louise", "Jumanne and Nicole make their U.S. Open debuts"], "Chicago Ladies": []}}, {"time": "8:30", "min": 510, "no": 4, "title": "8:30 · Court 1 · Game 4: Texas Bluebonnets v Alberta Wild Roses", "round": "Ladies Cup quarterfinal, 3rd v 6th", "teams": ["Texas Bluebonnets", "Alberta Wild Roses"], "rows": [{"label": "Standing", "vals": ["3rd, 27 pts", "6th, 18 pts"]}, {"label": "Record", "vals": ["W9 D0 L2", "W6 D0 L5"]}, {"label": "Goals", "vals": ["116 for, 54 against (+62)", "91 for, 58 against (+33)"]}, {"label": "Head to head", "vals": ["W 8-6", "L 6-8"]}, {"label": "v SF Stars", "vals": ["L 8-14", "L 5-6"]}, {"label": "v Heat", "vals": ["L 3-7", "L 5-6"]}, {"label": "v Force", "vals": ["W 9-4", "L 5-6"]}, {"label": "v Chicago", "vals": ["W 12-7", "L 6-9"]}, {"label": "v Flare", "vals": ["W 8-3", "W 11-6"]}, {"label": "v Tampa Bay", "vals": ["W 15-1", "W 8-4"]}, {"label": "v Fury", "vals": ["W 10-3", "W 12-1"]}, {"label": "v Silver Foxes", "vals": ["W 14-1", "W 14-4"]}, {"label": "v Allyanze", "vals": ["W 12-6", "W 9-3"]}, {"label": "v Dorchester", "vals": ["W 17-2", "W 10-5"]}, {"label": "Watch", "vals": ["Effie Bond (C, captain, \"the glue\"), Deonicha (WD, fast), Tiff and Emily (GK/GD), Jenny (interceptions), Lala (GS, youngest at 18)", "Lizzie (shooter), Ann (no-look passes), Aleisha (quick dodges), Lauren Chandler (\"a character\")"]}, {"label": "Say it", "vals": ["Deonicha = \"Dee-on-eee-sha\"", "Elizabeth goes by Lizzie"]}], "form": [{"team": "Texas Bluebonnets", "seq": ["W", "W", "W", "W", "W", "W", "W", "W", "L", "W", "L"]}, {"team": "Alberta Wild Roses", "seq": ["W", "W", "W", "L", "W", "W", "L", "L", "L", "L", "W"]}], "story": ["Texas won the Bowl last year in their first year, now chasing the Cup", "Alberta lost three straight by one goal, to Heat, Force and SF Stars"], "notes": {"Texas Bluebonnets": ["State select team, players from 7 countries, ages 18 to 47", "Placed in every tournament so far", "Chant: \"Blue on two!\""], "Alberta Wild Roses": ["4th and Team Spirit winners last year; goal is to match or beat both", "Self-coached; a third Canadian plus 2 Kiwis, 2 Australians, 1 English", "Captain Ash Gould has played about 35 years; the captain's hat gets a new pin every tournament"]}}, {"time": "9:00", "min": 540, "no": 7, "title": "9:00 · Court 1 · Game 7: The Outlaws v Vancouver Comets Fire", "round": "Mixed Cup quarterfinal, 4th v 5th", "teams": ["Outlaws", "Comets Fire"], "rows": [{"label": "Standing", "vals": ["4th, 18 pts", "5th, 16 pts"]}, {"label": "Record", "vals": ["W6 D0 L3", "W4 D2 L3"]}, {"label": "Goals", "vals": ["92 for, 58 against (+34)", "67 for, 74 against (-7)"]}, {"label": "Head to head", "vals": ["W 14-7", "L 7-14"]}, {"label": "v North Shore", "vals": ["L 4-13", "L 4-15"]}, {"label": "v Blaze", "vals": ["L 4-8", "L 4-12"]}, {"label": "v Mercenaries", "vals": ["L 9-10", "D 10-10"]}, {"label": "v Texas Mixed", "vals": ["W 12-3", "W 12-3"]}, {"label": "v Chicago Mixed", "vals": ["W 10-6", "D 6-6"]}, {"label": "v Emerald City", "vals": ["W 14-4", "W 7-4"]}, {"label": "v SF Stars Mixed", "vals": ["W 13-2", "W 12-6"]}, {"label": "v Rising Stars", "vals": ["W 12-5", "W 5-4"]}, {"label": "Watch", "vals": ["Gav W (last year's player of the tournament), Javel Mighty (Jamaican international), Kelly (shooter), Emma (co-captain), Taylor James (first mixed game)", "Romone Buchanan (GS, ex-Jamaica men's team), Ari Wilkins (leaps), Alex Gray (court IQ), Becca Ferreira (reads the play), Kat Comberbach (height)"]}, {"label": "Say it", "vals": ["", "Wawrzyniak = vav-ZHIN-yak, Vaillancourt = vy-on-KOOR, Comberbach = KOM-ber-batch, Harishankar Krishnan = huh-ree-SHUN-kar KRISH-nun"]}], "form": [{"team": "Outlaws", "seq": ["W", "W", "W", "W", "L", "W", "L", "W", "L"]}, {"team": "Comets Fire", "seq": ["W", "W", "D", "L", "W", "L", "D", "L", "W"]}], "story": ["Outlaws only lost to the top three, including 10-9 to Mercenaries", "Comets drew 10-10 with Mercenaries"], "notes": {"The Outlaws": ["Founded in August, organized everything over WhatsApp, first time playing together at this Open", "Two power couples: Chay and Liv, Sam and Gav", "Kelly and Emma still play county and regional at 45"], "Comets Fire": ["Ten players with roots in six countries", "Roughly 145 years of netball between nine of them", "Becca is back after spraining her ankle in her first game at the last Open"]}}, {"time": "9:30", "min": 570, "no": 10, "title": "9:30 · Court 1 · Game 10: Mercenaries v Texas Mixed", "round": "Mixed Cup quarterfinal, 3rd v 6th", "teams": ["Mercenaries", "Texas Mixed"], "rows": [{"label": "Standing", "vals": ["3rd, 20 pts", "6th, 11 pts"]}, {"label": "Record", "vals": ["W6 D1 L2", "W3 D1 L5"]}, {"label": "Goals", "vals": ["115 for, 74 against (+41)", "57 for, 80 against (-23)"]}, {"label": "Head to head", "vals": ["W 11-5", "L 5-11"]}, {"label": "v North Shore", "vals": ["L 12-17", "L 3-16"]}, {"label": "v Blaze", "vals": ["L 7-12", "L 5-11"]}, {"label": "v Outlaws", "vals": ["W 10-9", "L 3-12"]}, {"label": "v Comets Fire", "vals": ["D 10-10", "L 3-12"]}, {"label": "v Chicago Mixed", "vals": ["W 16-7", "W 8-2"]}, {"label": "v Emerald City", "vals": ["W 15-6", "W 13-1"]}, {"label": "v SF Stars Mixed", "vals": ["W 20-2", "D 5-5"]}, {"label": "v Rising Stars", "vals": ["W 14-6", "W 12-10"]}, {"label": "Watch", "vals": ["Ben Clayden (England Thorn), Kevar Mcalla (4th Open, grit), Hannah Middleton (captain), Aaron Rowledge (co-captain, flair)", ""]}, {"label": "Say it", "vals": ["", ""]}], "form": [{"team": "Mercenaries", "seq": ["W", "W", "D", "L", "W", "W", "W", "W", "L"]}, {"team": "Texas Mixed", "seq": ["L", "W", "L", "W", "L", "L", "W", "D", "L"]}], "story": ["Mercenaries scored 12 on unbeaten North Shore, the most anyone managed", "Twins on opposite benches: Mercenaries' Jas C and Outlaws' Sam C"], "notes": {"Mercenaries": ["Club set up in Nov 2025, in the EMMNA league within four months", "Aaron has repped three different teams at the Open and made last year's final", "Hannah is back from a major ankle injury and coaches London Pulse"], "Texas Mixed": []}}, {"time": "10:00", "min": 600, "no": 13, "title": "10:00 · Court 1 · Game 13: Ladies Bowl semifinal", "round": "Loser of Game 4 (Texas v Alberta) v loser of Game 6 (Heat v Flare). Read the two columns that apply.", "teams": ["Texas Bluebonnets", "Alberta Wild Roses", "Santa Monica Heat", "Santa Monica Flare"], "rows": [{"label": "Standing", "vals": ["3rd, 27 pts", "6th, 18 pts", "2nd, 30 pts", "7th, 17 pts"]}, {"label": "Record", "vals": ["W9 D0 L2", "W6 D0 L5", "W10 D0 L1", "W5 D1 L5"]}, {"label": "Goals", "vals": ["116 for, 54 against (+62)", "91 for, 58 against (+33)", "164 for, 33 against (+131)", "69 for, 73 against (-4)"]}, {"label": "Sunday QF", "vals": ["", "", "", ""]}, {"label": "v SF Stars", "vals": ["L 8-14", "L 5-6", "L 7-8", "L 6-8"]}, {"label": "v Heat", "vals": ["L 3-7", "L 5-6", "—", "L 2-15"]}, {"label": "v Texas", "vals": ["—", "L 6-8", "W 7-3", "L 3-8"]}, {"label": "v Force", "vals": ["W 9-4", "L 5-6", "W 16-3", "L 4-8"]}, {"label": "v Chicago", "vals": ["W 12-7", "L 6-9", "W 16-0", "W 9-8"]}, {"label": "v Alberta", "vals": ["W 8-6", "—", "W 6-5", "L 6-11"]}, {"label": "v Flare", "vals": ["W 8-3", "W 11-6", "W 15-2", "—"]}, {"label": "v Tampa Bay", "vals": ["W 15-1", "W 8-4", "W 19-2", "W 5-4"]}, {"label": "v Fury", "vals": ["W 10-3", "W 12-1", "W 18-1", "D 4-4"]}, {"label": "v Silver Foxes", "vals": ["W 14-1", "W 14-4", "W 23-4", "W 12-0"]}, {"label": "v Allyanze", "vals": ["W 12-6", "W 9-3", "W 15-4", "W 8-4"]}, {"label": "v Dorchester", "vals": ["W 17-2", "W 10-5", "W 22-1", "W 10-3"]}, {"label": "Watch", "vals": ["Effie Bond (C, captain), Deonicha (WD, fast), Tiff and Emily (GK/GD), Lala (GS, 18)", "Lizzie (shooter), Ann (no-look passes), Aleisha (quick dodges), Lauren Chandler (\"a character\")", "Jackie Brooke (WD, back from ACL injury), Caitlin and Bella (Manchester Thunder pathway), Taylah (Australian reserves)", "Jasmine (2025 Spirits Female Player of the Year), Anna (basketball movement), Radhika (also umpiring this weekend)"]}, {"label": "Say it", "vals": ["Deonicha = \"Dee-on-EE-sha\"", "Elizabeth goes by Lizzie", "", ""]}], "form": [{"team": "Texas", "seq": ["W", "W", "W", "W", "W", "W", "W", "W", "L", "W", "L"]}, {"team": "Alberta", "seq": ["W", "W", "W", "L", "W", "W", "L", "L", "L", "L", "W"]}, {"team": "Heat", "seq": ["W", "W", "W", "W", "W", "W", "L", "W", "W", "W", "W"]}, {"team": "Flare", "seq": ["W", "D", "W", "W", "W", "W", "L", "L", "L", "L", "L"]}], "story": ["Every possible Bowl pairing is a Saturday rematch: Heat beat Texas 7-3 and Alberta 6-5; Texas beat Flare 8-3; Alberta beat Flare 11-6", "Heat are two-time reigning Cup champions, so a Bowl game for them would be the shock of the morning"], "notes": {"Texas Bluebonnets": ["Won the Bowl last year in their first year", "State select team, players from 7 countries, ages 18 to 47", "Chant: \"Blue on two!\""], "Alberta Wild Roses": ["4th and Team Spirit winners last year", "Self-coached; a third Canadian plus 2 Kiwis, 2 Australians, 1 English", "Lost three straight Saturday games by one goal, to Heat, Force and SF Stars"], "Santa Monica Heat": ["Two-time reigning Ladies Cup champions (2024, 2025); 8 of 10 from 2025 are back", "Goal: \"bring Cuppy home again\"", "Long friendly rivalry with SF Stars, who beat them 8-7 Saturday"], "Santa Monica Flare": ["Spirits' second Ladies team, third year running", "Co-captains Genevieve (new from SF Stars) and Liv (2025 Newcomer of the Year)", "\"In it to win it\" after extra weeknight sessions"]}}, {"time": "10:30", "min": 630, "no": 16, "title": "10:30 · Court 1 · Game 16: Ladies Cup semifinal", "round": "Winner of Game 5 (SF Stars v Tampa Bay) v winner of Game 1 (Force v Chicago). Read the two columns that apply.", "teams": ["SF Stars Ladies", "Tampa Bay Panthers", "Denver Blizzards Force", "Chicago Ladies"], "rows": [{"label": "Standing", "vals": ["1st, 30 pts", "8th, 12 pts", "4th, 26 pts", "5th, 20 pts"]}, {"label": "Record", "vals": ["W10 D0 L1", "W4 D0 L7", "W8 D1 L2", "W6 D1 L4"]}, {"label": "Goals", "vals": ["107 for, 47 against (+60)", "74 for, 95 against (-21)", "83 for, 67 against (+16)", "112 for, 93 against (+19)"]}, {"label": "Sunday QF", "vals": ["", "", "", ""]}, {"label": "v SF Stars", "vals": ["—", "L 2-7", "W 5-3", "L 6-17"]}, {"label": "v Heat", "vals": ["W 8-7", "L 2-19", "L 3-16", "L 0-16"]}, {"label": "v Texas", "vals": ["W 14-8", "L 1-15", "L 4-9", "L 7-12"]}, {"label": "v Force", "vals": ["L 3-5", "L 6-8", "—", "D 10-10"]}, {"label": "v Chicago", "vals": ["W 17-6", "L 6-12", "D 10-10", "—"]}, {"label": "v Alberta", "vals": ["W 6-5", "L 4-8", "W 6-5", "W 9-6"]}, {"label": "v Flare", "vals": ["W 8-6", "L 4-5", "W 8-4", "L 8-9"]}, {"label": "v Tampa Bay", "vals": ["W 7-2", "—", "W 8-6", "W 12-6"]}, {"label": "v Fury", "vals": ["W 12-1", "W 8-5", "W 9-1", "W 10-6"]}, {"label": "v Silver Foxes", "vals": ["W 8-2", "W 13-8", "W 10-5", "W 15-6"]}, {"label": "v Allyanze", "vals": ["W 12-4", "W 15-5", "W 9-6", "W 14-4"]}, {"label": "v Dorchester", "vals": ["W 12-1", "W 13-3", "W 11-2", "W 21-1"]}, {"label": "Watch", "vals": ["Hayley Wilson (coach, last year's Ladies MVP), Jenae Carpenter (2023 title team)", "", "Louise (sharp shooter), Steph (defensive pressure), Leah (calm leader)", ""]}, {"label": "Say it", "vals": ["", "", "Jumanne = \"You-ma\"", ""]}], "form": [{"team": "SF Stars", "seq": ["W", "W", "W", "W", "W", "W", "W", "L", "W", "W", "W"]}, {"team": "Tampa Bay", "seq": ["L", "L", "L", "L", "L", "L", "L", "W", "W", "W", "W"]}, {"team": "Force", "seq": ["D", "W", "W", "W", "W", "W", "W", "W", "W", "L", "L"]}, {"team": "Chicago", "seq": ["D", "L", "L", "W", "L", "L", "W", "W", "W", "W", "W"]}], "story": ["Force were the only team to beat SF Stars on Saturday, 5-3", "Every possible pairing is a Saturday rematch: SF Stars beat Chicago 17-6; Force beat Tampa Bay 8-6; Chicago beat Tampa Bay 12-6"], "notes": {"SF Stars Ladies": ["Won the 2023 Ladies division", "Club celebrated its 25th anniversary last year", "New captain Sandra Chau, in her first year with the club"], "Tampa Bay Panthers": ["Lost their first seven Saturday games, then won their last four"], "Denver Blizzards Force": ["Play outdoors year-round, even in winter, at Walker-Branch Park", "Logo has seven seven-sided snowflakes, one per player, designed by Louise", "Jumanne and Nicole make their U.S. Open debuts"], "Chicago Ladies": ["Finished Saturday on five straight wins"]}}], "sat": {"Ladies": {"table": [{"pos": 1, "team": "SF Stars", "w": 10, "d": 0, "l": 1, "gf": 107, "ga": 47, "gd": "+60", "note": "ahead of Heat on their 8-7 win"}, {"pos": 2, "team": "Heat", "w": 10, "d": 0, "l": 1, "gf": 164, "ga": 33, "gd": "+131", "note": ""}, {"pos": 3, "team": "Texas", "w": 9, "d": 0, "l": 2, "gf": 116, "ga": 54, "gd": "+62", "note": ""}, {"pos": 4, "team": "Force", "w": 8, "d": 1, "l": 2, "gf": 83, "ga": 67, "gd": "+16", "note": ""}, {"pos": 5, "team": "Chicago", "w": 6, "d": 1, "l": 4, "gf": 112, "ga": 93, "gd": "+19", "note": ""}, {"pos": 6, "team": "Alberta", "w": 6, "d": 0, "l": 5, "gf": 91, "ga": 58, "gd": "+33", "note": ""}, {"pos": 7, "team": "Flare", "w": 5, "d": 1, "l": 5, "gf": 69, "ga": 73, "gd": "-4", "note": ""}, {"pos": 8, "team": "Tampa Bay", "w": 4, "d": 0, "l": 7, "gf": 74, "ga": 95, "gd": "-21", "note": ""}, {"pos": 9, "team": "Fury", "w": 2, "d": 1, "l": 8, "gf": 39, "ga": 97, "gd": "-58", "note": ""}, {"pos": 10, "team": "Silver Foxes", "w": 2, "d": 0, "l": 9, "gf": 58, "ga": 129, "gd": "-71", "note": "ahead of Allyanze on their 10-8 win"}, {"pos": 11, "team": "Allyanze", "w": 2, "d": 0, "l": 9, "gf": 69, "ga": 108, "gd": "-39", "note": ""}, {"pos": 12, "team": "Dorchester", "w": 0, "d": 0, "l": 11, "gf": 24, "ga": 152, "gd": "-128", "note": ""}], "results": {"SF Stars": [{"r": "W", "f": 8, "a": 2, "opp": "Silver Foxes"}, {"r": "W", "f": 12, "a": 1, "opp": "Dorchester"}, {"r": "W", "f": 17, "a": 6, "opp": "Chicago"}, {"r": "W", "f": 7, "a": 2, "opp": "Tampa Bay"}, {"r": "W", "f": 12, "a": 1, "opp": "Fury"}, {"r": "W", "f": 12, "a": 4, "opp": "Allyanze"}, {"r": "W", "f": 8, "a": 7, "opp": "Heat"}, {"r": "L", "f": 3, "a": 5, "opp": "Force"}, {"r": "W", "f": 8, "a": 6, "opp": "Flare"}, {"r": "W", "f": 6, "a": 5, "opp": "Alberta"}, {"r": "W", "f": 14, "a": 8, "opp": "Texas"}], "Heat": [{"r": "W", "f": 22, "a": 1, "opp": "Dorchester"}, {"r": "W", "f": 16, "a": 0, "opp": "Chicago"}, {"r": "W", "f": 19, "a": 2, "opp": "Tampa Bay"}, {"r": "W", "f": 18, "a": 1, "opp": "Fury"}, {"r": "W", "f": 15, "a": 4, "opp": "Allyanze"}, {"r": "W", "f": 23, "a": 4, "opp": "Silver Foxes"}, {"r": "L", "f": 7, "a": 8, "opp": "SF Stars"}, {"r": "W", "f": 6, "a": 5, "opp": "Alberta"}, {"r": "W", "f": 7, "a": 3, "opp": "Texas"}, {"r": "W", "f": 15, "a": 2, "opp": "Flare"}, {"r": "W", "f": 16, "a": 3, "opp": "Force"}], "Texas": [{"r": "W", "f": 10, "a": 3, "opp": "Fury"}, {"r": "W", "f": 12, "a": 6, "opp": "Allyanze"}, {"r": "W", "f": 14, "a": 1, "opp": "Silver Foxes"}, {"r": "W", "f": 17, "a": 2, "opp": "Dorchester"}, {"r": "W", "f": 12, "a": 7, "opp": "Chicago"}, {"r": "W", "f": 15, "a": 1, "opp": "Tampa Bay"}, {"r": "W", "f": 8, "a": 6, "opp": "Alberta"}, {"r": "W", "f": 8, "a": 3, "opp": "Flare"}, {"r": "L", "f": 3, "a": 7, "opp": "Heat"}, {"r": "W", "f": 9, "a": 4, "opp": "Force"}, {"r": "L", "f": 8, "a": 14, "opp": "SF Stars"}], "Force": [{"r": "D", "f": 10, "a": 10, "opp": "Chicago"}, {"r": "W", "f": 8, "a": 6, "opp": "Tampa Bay"}, {"r": "W", "f": 9, "a": 1, "opp": "Fury"}, {"r": "W", "f": 9, "a": 6, "opp": "Allyanze"}, {"r": "W", "f": 10, "a": 5, "opp": "Silver Foxes"}, {"r": "W", "f": 11, "a": 2, "opp": "Dorchester"}, {"r": "W", "f": 8, "a": 4, "opp": "Flare"}, {"r": "W", "f": 5, "a": 3, "opp": "SF Stars"}, {"r": "W", "f": 6, "a": 5, "opp": "Alberta"}, {"r": "L", "f": 4, "a": 9, "opp": "Texas"}, {"r": "L", "f": 3, "a": 16, "opp": "Heat"}], "Chicago": [{"r": "D", "f": 10, "a": 10, "opp": "Force"}, {"r": "L", "f": 0, "a": 16, "opp": "Heat"}, {"r": "L", "f": 6, "a": 17, "opp": "SF Stars"}, {"r": "W", "f": 9, "a": 6, "opp": "Alberta"}, {"r": "L", "f": 7, "a": 12, "opp": "Texas"}, {"r": "L", "f": 8, "a": 9, "opp": "Flare"}, {"r": "W", "f": 12, "a": 6, "opp": "Tampa Bay"}, {"r": "W", "f": 15, "a": 6, "opp": "Silver Foxes"}, {"r": "W", "f": 14, "a": 4, "opp": "Allyanze"}, {"r": "W", "f": 10, "a": 6, "opp": "Fury"}, {"r": "W", "f": 21, "a": 1, "opp": "Dorchester"}], "Alberta": [{"r": "W", "f": 9, "a": 3, "opp": "Allyanze"}, {"r": "W", "f": 14, "a": 4, "opp": "Silver Foxes"}, {"r": "W", "f": 10, "a": 5, "opp": "Dorchester"}, {"r": "L", "f": 6, "a": 9, "opp": "Chicago"}, {"r": "W", "f": 8, "a": 4, "opp": "Tampa Bay"}, {"r": "W", "f": 12, "a": 1, "opp": "Fury"}, {"r": "L", "f": 6, "a": 8, "opp": "Texas"}, {"r": "L", "f": 5, "a": 6, "opp": "Heat"}, {"r": "L", "f": 5, "a": 6, "opp": "Force"}, {"r": "L", "f": 5, "a": 6, "opp": "SF Stars"}, {"r": "W", "f": 11, "a": 6, "opp": "Flare"}], "Flare": [{"r": "W", "f": 5, "a": 4, "opp": "Tampa Bay"}, {"r": "D", "f": 4, "a": 4, "opp": "Fury"}, {"r": "W", "f": 8, "a": 4, "opp": "Allyanze"}, {"r": "W", "f": 12, "a": 0, "opp": "Silver Foxes"}, {"r": "W", "f": 10, "a": 3, "opp": "Dorchester"}, {"r": "W", "f": 9, "a": 8, "opp": "Chicago"}, {"r": "L", "f": 4, "a": 8, "opp": "Force"}, {"r": "L", "f": 3, "a": 8, "opp": "Texas"}, {"r": "L", "f": 6, "a": 8, "opp": "SF Stars"}, {"r": "L", "f": 2, "a": 15, "opp": "Heat"}, {"r": "L", "f": 6, "a": 11, "opp": "Alberta"}], "Tampa Bay": [{"r": "L", "f": 4, "a": 5, "opp": "Flare"}, {"r": "L", "f": 6, "a": 8, "opp": "Force"}, {"r": "L", "f": 2, "a": 19, "opp": "Heat"}, {"r": "L", "f": 2, "a": 7, "opp": "SF Stars"}, {"r": "L", "f": 4, "a": 8, "opp": "Alberta"}, {"r": "L", "f": 1, "a": 15, "opp": "Texas"}, {"r": "L", "f": 6, "a": 12, "opp": "Chicago"}, {"r": "W", "f": 8, "a": 5, "opp": "Fury"}, {"r": "W", "f": 13, "a": 8, "opp": "Silver Foxes"}, {"r": "W", "f": 13, "a": 3, "opp": "Dorchester"}, {"r": "W", "f": 15, "a": 5, "opp": "Allyanze"}], "Fury": [{"r": "L", "f": 3, "a": 10, "opp": "Texas"}, {"r": "D", "f": 4, "a": 4, "opp": "Flare"}, {"r": "L", "f": 1, "a": 9, "opp": "Force"}, {"r": "L", "f": 1, "a": 18, "opp": "Heat"}, {"r": "L", "f": 1, "a": 12, "opp": "SF Stars"}, {"r": "L", "f": 1, "a": 12, "opp": "Alberta"}, {"r": "L", "f": 4, "a": 7, "opp": "Allyanze"}, {"r": "L", "f": 5, "a": 8, "opp": "Tampa Bay"}, {"r": "W", "f": 6, "a": 1, "opp": "Dorchester"}, {"r": "L", "f": 6, "a": 10, "opp": "Chicago"}, {"r": "W", "f": 7, "a": 6, "opp": "Silver Foxes"}], "Silver Foxes": [{"r": "L", "f": 2, "a": 8, "opp": "SF Stars"}, {"r": "L", "f": 4, "a": 14, "opp": "Alberta"}, {"r": "L", "f": 1, "a": 14, "opp": "Texas"}, {"r": "L", "f": 0, "a": 12, "opp": "Flare"}, {"r": "L", "f": 5, "a": 10, "opp": "Force"}, {"r": "L", "f": 4, "a": 23, "opp": "Heat"}, {"r": "W", "f": 12, "a": 5, "opp": "Dorchester"}, {"r": "L", "f": 6, "a": 15, "opp": "Chicago"}, {"r": "L", "f": 8, "a": 13, "opp": "Tampa Bay"}, {"r": "W", "f": 10, "a": 8, "opp": "Allyanze"}, {"r": "L", "f": 6, "a": 7, "opp": "Fury"}], "Allyanze": [{"r": "L", "f": 3, "a": 9, "opp": "Alberta"}, {"r": "L", "f": 6, "a": 12, "opp": "Texas"}, {"r": "L", "f": 4, "a": 8, "opp": "Flare"}, {"r": "L", "f": 6, "a": 9, "opp": "Force"}, {"r": "L", "f": 4, "a": 15, "opp": "Heat"}, {"r": "L", "f": 4, "a": 12, "opp": "SF Stars"}, {"r": "W", "f": 7, "a": 4, "opp": "Fury"}, {"r": "W", "f": 18, "a": 0, "opp": "Dorchester"}, {"r": "L", "f": 4, "a": 14, "opp": "Chicago"}, {"r": "L", "f": 8, "a": 10, "opp": "Silver Foxes"}, {"r": "L", "f": 5, "a": 15, "opp": "Tampa Bay"}], "Dorchester": [{"r": "L", "f": 1, "a": 22, "opp": "Heat"}, {"r": "L", "f": 1, "a": 12, "opp": "SF Stars"}, {"r": "L", "f": 5, "a": 10, "opp": "Alberta"}, {"r": "L", "f": 2, "a": 17, "opp": "Texas"}, {"r": "L", "f": 3, "a": 10, "opp": "Flare"}, {"r": "L", "f": 2, "a": 11, "opp": "Force"}, {"r": "L", "f": 5, "a": 12, "opp": "Silver Foxes"}, {"r": "L", "f": 0, "a": 18, "opp": "Allyanze"}, {"r": "L", "f": 1, "a": 6, "opp": "Fury"}, {"r": "L", "f": 3, "a": 13, "opp": "Tampa Bay"}, {"r": "L", "f": 1, "a": 21, "opp": "Chicago"}]}}, "Mixed": {"table": [{"pos": 1, "team": "North Shore", "w": 9, "d": 0, "l": 0, "gf": 155, "ga": 34, "gd": "+121", "note": ""}, {"pos": 2, "team": "Blaze", "w": 8, "d": 0, "l": 1, "gf": 100, "ga": 53, "gd": "+47", "note": ""}, {"pos": 3, "team": "Mercenaries", "w": 6, "d": 1, "l": 2, "gf": 115, "ga": 74, "gd": "+41", "note": ""}, {"pos": 4, "team": "Outlaws", "w": 6, "d": 0, "l": 3, "gf": 92, "ga": 58, "gd": "+34", "note": ""}, {"pos": 5, "team": "Comets Fire", "w": 4, "d": 2, "l": 3, "gf": 67, "ga": 74, "gd": "-7", "note": ""}, {"pos": 6, "team": "Texas Mixed", "w": 3, "d": 1, "l": 5, "gf": 57, "ga": 80, "gd": "-23", "note": ""}, {"pos": 7, "team": "Chicago Mixed", "w": 2, "d": 2, "l": 5, "gf": 61, "ga": 96, "gd": "-35", "note": ""}, {"pos": 8, "team": "Emerald City", "w": 2, "d": 1, "l": 6, "gf": 41, "ga": 106, "gd": "-65", "note": ""}, {"pos": 9, "team": "SF Stars Mixed", "w": 1, "d": 1, "l": 7, "gf": 42, "ga": 105, "gd": "-63", "note": ""}, {"pos": 10, "team": "Rising Stars", "w": 0, "d": 0, "l": 9, "gf": 51, "ga": 101, "gd": "-50", "note": ""}], "results": {"North Shore": [{"r": "W", "f": 22, "a": 3, "opp": "Chicago Mixed"}, {"r": "W", "f": 15, "a": 4, "opp": "Blaze"}, {"r": "W", "f": 16, "a": 3, "opp": "Texas Mixed"}, {"r": "W", "f": 20, "a": 0, "opp": "Emerald City"}, {"r": "W", "f": 19, "a": 2, "opp": "SF Stars Mixed"}, {"r": "W", "f": 15, "a": 4, "opp": "Comets Fire"}, {"r": "W", "f": 13, "a": 4, "opp": "Outlaws"}, {"r": "W", "f": 18, "a": 2, "opp": "Rising Stars"}, {"r": "W", "f": 17, "a": 12, "opp": "Mercenaries"}], "Blaze": [{"r": "W", "f": 14, "a": 5, "opp": "Rising Stars"}, {"r": "L", "f": 4, "a": 15, "opp": "North Shore"}, {"r": "W", "f": 9, "a": 7, "opp": "Chicago Mixed"}, {"r": "W", "f": 12, "a": 7, "opp": "Mercenaries"}, {"r": "W", "f": 11, "a": 5, "opp": "Texas Mixed"}, {"r": "W", "f": 16, "a": 2, "opp": "Emerald City"}, {"r": "W", "f": 14, "a": 4, "opp": "SF Stars Mixed"}, {"r": "W", "f": 12, "a": 4, "opp": "Comets Fire"}, {"r": "W", "f": 8, "a": 4, "opp": "Outlaws"}], "Mercenaries": [{"r": "W", "f": 20, "a": 2, "opp": "SF Stars Mixed"}, {"r": "W", "f": 16, "a": 7, "opp": "Chicago Mixed"}, {"r": "D", "f": 10, "a": 10, "opp": "Comets Fire"}, {"r": "L", "f": 7, "a": 12, "opp": "Blaze"}, {"r": "W", "f": 10, "a": 9, "opp": "Outlaws"}, {"r": "W", "f": 11, "a": 5, "opp": "Texas Mixed"}, {"r": "W", "f": 14, "a": 6, "opp": "Rising Stars"}, {"r": "W", "f": 15, "a": 6, "opp": "Emerald City"}, {"r": "L", "f": 12, "a": 17, "opp": "North Shore"}], "Outlaws": [{"r": "W", "f": 12, "a": 3, "opp": "Texas Mixed"}, {"r": "W", "f": 14, "a": 4, "opp": "Emerald City"}, {"r": "W", "f": 13, "a": 2, "opp": "SF Stars Mixed"}, {"r": "W", "f": 14, "a": 7, "opp": "Comets Fire"}, {"r": "L", "f": 9, "a": 10, "opp": "Mercenaries"}, {"r": "W", "f": 12, "a": 5, "opp": "Rising Stars"}, {"r": "L", "f": 4, "a": 13, "opp": "North Shore"}, {"r": "W", "f": 10, "a": 6, "opp": "Chicago Mixed"}, {"r": "L", "f": 4, "a": 8, "opp": "Blaze"}], "Comets Fire": [{"r": "W", "f": 7, "a": 4, "opp": "Emerald City"}, {"r": "W", "f": 12, "a": 6, "opp": "SF Stars Mixed"}, {"r": "D", "f": 10, "a": 10, "opp": "Mercenaries"}, {"r": "L", "f": 7, "a": 14, "opp": "Outlaws"}, {"r": "W", "f": 5, "a": 4, "opp": "Rising Stars"}, {"r": "L", "f": 4, "a": 15, "opp": "North Shore"}, {"r": "D", "f": 6, "a": 6, "opp": "Chicago Mixed"}, {"r": "L", "f": 4, "a": 12, "opp": "Blaze"}, {"r": "W", "f": 12, "a": 3, "opp": "Texas Mixed"}], "Texas Mixed": [{"r": "L", "f": 3, "a": 12, "opp": "Outlaws"}, {"r": "W", "f": 12, "a": 10, "opp": "Rising Stars"}, {"r": "L", "f": 3, "a": 16, "opp": "North Shore"}, {"r": "W", "f": 8, "a": 2, "opp": "Chicago Mixed"}, {"r": "L", "f": 5, "a": 11, "opp": "Blaze"}, {"r": "L", "f": 5, "a": 11, "opp": "Mercenaries"}, {"r": "W", "f": 13, "a": 1, "opp": "Emerald City"}, {"r": "D", "f": 5, "a": 5, "opp": "SF Stars Mixed"}, {"r": "L", "f": 3, "a": 12, "opp": "Comets Fire"}], "Chicago Mixed": [{"r": "L", "f": 3, "a": 22, "opp": "North Shore"}, {"r": "L", "f": 7, "a": 16, "opp": "Mercenaries"}, {"r": "L", "f": 7, "a": 9, "opp": "Blaze"}, {"r": "L", "f": 2, "a": 8, "opp": "Texas Mixed"}, {"r": "D", "f": 8, "a": 8, "opp": "Emerald City"}, {"r": "W", "f": 10, "a": 7, "opp": "SF Stars Mixed"}, {"r": "D", "f": 6, "a": 6, "opp": "Comets Fire"}, {"r": "L", "f": 6, "a": 10, "opp": "Outlaws"}, {"r": "W", "f": 12, "a": 10, "opp": "Rising Stars"}], "Emerald City": [{"r": "L", "f": 4, "a": 7, "opp": "Comets Fire"}, {"r": "L", "f": 4, "a": 14, "opp": "Outlaws"}, {"r": "W", "f": 7, "a": 6, "opp": "Rising Stars"}, {"r": "L", "f": 0, "a": 20, "opp": "North Shore"}, {"r": "D", "f": 8, "a": 8, "opp": "Chicago Mixed"}, {"r": "L", "f": 2, "a": 16, "opp": "Blaze"}, {"r": "L", "f": 1, "a": 13, "opp": "Texas Mixed"}, {"r": "L", "f": 6, "a": 15, "opp": "Mercenaries"}, {"r": "W", "f": 9, "a": 7, "opp": "SF Stars Mixed"}], "SF Stars Mixed": [{"r": "L", "f": 2, "a": 20, "opp": "Mercenaries"}, {"r": "L", "f": 6, "a": 12, "opp": "Comets Fire"}, {"r": "L", "f": 2, "a": 13, "opp": "Outlaws"}, {"r": "W", "f": 7, "a": 3, "opp": "Rising Stars"}, {"r": "L", "f": 2, "a": 19, "opp": "North Shore"}, {"r": "L", "f": 7, "a": 10, "opp": "Chicago Mixed"}, {"r": "L", "f": 4, "a": 14, "opp": "Blaze"}, {"r": "D", "f": 5, "a": 5, "opp": "Texas Mixed"}, {"r": "L", "f": 7, "a": 9, "opp": "Emerald City"}], "Rising Stars": [{"r": "L", "f": 5, "a": 14, "opp": "Blaze"}, {"r": "L", "f": 10, "a": 12, "opp": "Texas Mixed"}, {"r": "L", "f": 6, "a": 7, "opp": "Emerald City"}, {"r": "L", "f": 3, "a": 7, "opp": "SF Stars Mixed"}, {"r": "L", "f": 4, "a": 5, "opp": "Comets Fire"}, {"r": "L", "f": 5, "a": 12, "opp": "Outlaws"}, {"r": "L", "f": 6, "a": 14, "opp": "Mercenaries"}, {"r": "L", "f": 2, "a": 18, "opp": "North Shore"}, {"r": "L", "f": 10, "a": 12, "opp": "Chicago Mixed"}]}}}};
+const TZ = 'America/Los_Angeles';
+const SCHEDULE = [
+  { no: 1, time: '8:00' }, { no: 4, time: '8:30' }, { no: 7, time: '9:00' }, { no: 10, time: '9:30' },
+  { no: 13, time: '10:00' }, { no: 16, time: '10:30' },
+  { no: 19, time: '11:00', label: 'Ladies Cup semifinal', how: 'Winner of Game 4 (Texas v Alberta) v winner of Game 6 (Heat v Flare)', short: 'Cup SF' },
+  { no: 21, time: '11:30', label: 'Mixed Cup semifinal', how: 'Winner of Game 9 (North Shore v winner of Game 3) v winner of Game 7 (Outlaws v Comets Fire)', short: 'Mixed SF' },
+  { no: 24, time: '12:00', label: 'Ladies Cup 3rd place', how: 'Loser of Game 16 v loser of Game 19', short: 'Cup 3rd' },
+  { no: 27, time: '12:30', label: 'Mixed Cup 3rd place', how: 'Loser of Game 21 v loser of Game 22', short: 'Mixed 3rd' },
+  { no: 30, time: '1:30', label: 'Mixed Cup final', how: 'Winner of Game 21 v winner of Game 22', short: 'Mixed final' },
+  { no: 31, time: '2:00', label: 'Ladies Cup final', how: 'Winner of Game 16 v winner of Game 19', short: 'Cup final' },
+];
+const toMin = t => { let [h, m] = t.split(':').map(Number); if (h < 7) h += 12; return h * 60 + m; };
+const fmt12 = t => { const [h, m] = t.split(':').map(Number); return `${h}:${String(m).padStart(2,'0')}`; };
+const NOTREADY = /\b(to check|check|confirm|confirmed\?|verify|unconfirmed)\b/i;
+const ready = s => !!s && !NOTREADY.test(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const games = {};
+(DATA?.games || []).forEach(g => { games[g.no] = g; });
+const slots = SCHEDULE.map(s => ({ ...s, min: toMin(s.time) }));
+Object.values(games).forEach(g => { if (!slots.find(s => s.no === g.no)) slots.push({ no: g.no, time: g.time, min: g.min }); });
+slots.sort((a, b) => a.min - b.min);
+
+// Short team names from the Saturday tables
+const SHORTS = [];
+['Ladies', 'Mixed'].forEach(d => (DATA?.sat?.[d]?.table || []).forEach(r => SHORTS.push({ name: r.team, div: d })));
+function shortName(full, div) {
+  let best = null;
+  SHORTS.filter(s => !div || s.div === div).forEach(s => { if (full.includes(s.name) && (!best || s.name.length > best.length)) best = s.name; });
+  return best || full;
+}
+function divOf(g) { return /mixed/i.test(g.title + ' ' + g.round) ? 'Mixed' : 'Ladies'; }
+
+function nowPT() {
+  const p = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: false }).formatToParts(new Date());
+  const h = +p.find(x => x.type === 'hour').value % 24, m = +p.find(x => x.type === 'minute').value;
+  return h * 60 + m;
+}
+function currentSlot() {
+  const n = nowPT();
+  const s = slots.find(s => n < s.min + 30);
+  return s || slots[slots.length - 1];
+}
+
+function resHTML(v) {
+  const m = /^([WDL])\s+(.+)$/.exec(v || '');
+  if (!m) {
+    if (!v || v === '—' || /^dnp$/i.test(v)) return '<span class="nil">–</span>';
+    return esc(v);
+  }
+  return `<span class="res ${m[1]}"><b>${m[1]}</b> ${esc(m[2])}</span>`;
+}
+
+// split at commas/semicolons outside parentheses
+function splitTop(s, seps) {
+  const out = []; let depth = 0, cur = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === '(') depth++; else if (c === ')') depth = Math.max(0, depth - 1);
+    if (depth === 0 && seps.includes(c)) { out.push(cur.trim()); cur = ''; while (s[i + 1] === ' ') i++; continue; }
+    cur += c;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out.filter(Boolean);
+}
+function watchHTML(v) {
+  if (!v) return '';
+  const items = splitTop(v, ',').filter(ready);
+  if (!items.length) return '';
+  return '<ul class="watch">' + items.map(it => {
+    const m = /^(.*?)\s*\((.*)\)$/.exec(it);
+    return m ? `<li><b>${esc(m[1])}</b> <span class="why">${esc(m[2])}</span></li>` : `<li><b>${esc(it)}</b></li>`;
+  }).join('') + '</ul>';
+}
+function sayHTML(v) {
+  if (!v) return '';
+  let parts = [];
+  splitTop(v, ';').forEach(seg => {
+    const bits = splitTop(seg, ',');
+    const merged = [];
+    bits.forEach(b => { if (b.includes('=') || !merged.length) merged.push(b); else merged[merged.length - 1] += ', ' + b; });
+    parts = parts.concat(merged);
+  });
+  parts = parts.filter(ready);
+  if (!parts.length) return '';
+  return '<ul class="say">' + parts.map(p => {
+    const m = /^(.*?)\s*=\s*(.+)$/.exec(p);
+    return m ? `<li><b>${esc(m[1])}</b> <span class="ph">${esc(m[2].replace(/^"|"$/g, ''))}</span></li>` : `<li>${esc(p)}</li>`;
+  }).join('') + '</ul>';
+}
+
+const state = { slot: null, pick: {} };
+
+function renderPills(scroll) {
+  const cur = currentSlot();
+  const el = document.getElementById('pills');
+  el.innerHTML = slots.map(s => {
+    const g = games[s.no];
+    let sub;
+    if (g) {
+      if (g.teams.length === 2) { const d = divOf(g); sub = g.teams.map(t => shortName(t, d)).join(' v '); }
+      else sub = (s.short || g.title.replace(/^.*Game \d+:\s*/, '')).replace(/semifinal/i, 'SF').replace(/^Ladies /, '');
+    } else sub = s.short || '';
+    const cls = ['pill', g ? '' : 'soon', s.min + 30 <= nowPT() ? 'done' : '', s.no === cur.no ? 'now' : ''].join(' ');
+    return `<button class="${cls}" data-no="${s.no}" aria-current="${state.slot === s.no}"><span class="pt">${fmt12(s.time)} · G${s.no}</span><span class="ps">${esc(sub)}</span></button>`;
+  }).join('') + `<button class="pill" data-no="ladder" aria-current="${state.slot === 'ladder'}"><span class="pt">Saturday</span><span class="ps">Ladders</span></button>`;
+  el.querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => go(b.dataset.no === 'ladder' ? 'ladder' : +b.dataset.no)));
+  const active = el.querySelector('[aria-current="true"]');
+  if (active && scroll) el.scrollLeft = active.offsetLeft - (el.clientWidth - active.offsetWidth) / 2;
+}
+
+function go(no, fromHash) {
+  state.slot = no;
+  if (!fromHash) { try { history.replaceState(null, '', no === 'ladder' ? '#ladder' : '#g' + no); } catch (e) {} }
+  renderPills(true);
+  render();
+  window.scrollTo({ top: 0 });
+}
+
+function render() {
+  const v = document.getElementById('view');
+  if (state.slot === 'ladder') { v.innerHTML = ladderHTML(); bindLadder(); return; }
+  const g = games[state.slot];
+  const s = slots.find(x => x.no === state.slot);
+  if (!g) {
+    v.innerHTML = `<div class="head"><div class="eyebrow">${fmt12(s.time)} · Court 1 · Game ${s.no}</div></div>
+      <div class="card soon-card"><div class="big">${esc(s.label || 'Game ' + s.no)}</div><p>${esc(s.how || '')}</p></div>`;
+    return;
+  }
+  v.innerHTML = gameHTML(g);
+  v.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+    state.pick[g.no] = { ...(state.pick[g.no] || { a: 0, b: 2 }), [b.dataset.side]: +b.dataset.i };
+    render();
+  }));
+}
+
+function gameHTML(g) {
+  const d = divOf(g);
+  const n = g.teams.length;
+  let ia = 0, ib = 1, picker = '';
+  if (n === 4) {
+    const p = state.pick[g.no] || { a: 0, b: 2 };
+    ia = p.a; ib = p.b;
+    const btn = (i, side, on) => `<button data-side="${side}" data-i="${i}" aria-pressed="${on}">${esc(shortName(g.teams[i], d))}</button>`;
+    picker = `<div class="pick"><div class="pick-lbl">Pick the matchup</div><div class="pick-row">
+      <div class="seg sa">${btn(0, 'a', ia === 0)}${btn(1, 'a', ia === 1)}</div><span class="vs">v</span>
+      <div class="seg sb">${btn(2, 'b', ib === 2)}${btn(3, 'b', ib === 3)}</div></div></div>`;
+  } else if (n !== 2) { ia = 0; ib = Math.min(1, n - 1); }
+  const A = g.teams[ia], B = g.teams[ib];
+  const sA = shortName(A, d), sB = shortName(B, d);
+
+  // rows
+  const stat = [], opp = [];
+  let watch = ['', ''], say = ['', ''];
+  g.rows.forEach(r => {
+    const va = r.vals[ia] ?? '', vb = r.vals[ib] ?? '';
+    if (/^watch$/i.test(r.label)) { watch = [va, vb]; return; }
+    if (/^say it$/i.test(r.label)) { say = [va, vb]; return; }
+    const om = /^v (.+)$/.exec(r.label);
+    if (om) {
+      const o = om[1];
+      if (A.includes(o) || B.includes(o) || sA === o || sB === o) {
+        if (B.includes(o) || sB === o) stat.push({ label: 'Head to head', va, vb: (r.vals[ib] && r.vals[ib] !== '—') ? r.vals[ib] : flip(va), h2h: true, res: true });
+        return;
+      }
+      opp.push({ label: o, va, vb });
+      return;
+    }
+    if (/head to head/i.test(r.label)) { stat.push({ label: r.label, va, vb, h2h: true, res: true }); return; }
+    stat.push({ label: r.label, va, vb, res: /^[WDL]\s/.test(va) || /^[WDL]\s/.test(vb) });
+  });
+  // keep one head-to-head row
+  const seen = new Set();
+  const stats = stat.filter(r => { if (!r.h2h) return true; if (seen.has('h')) return false; seen.add('h'); return true; });
+  stats.forEach(r => { if (!ready(r.va)) r.va = ''; if (!ready(r.vb)) r.vb = ''; });
+  for (let i = stats.length - 1; i >= 0; i--) if (!stats[i].va && !stats[i].vb) stats.splice(i, 1);
+  opp.forEach(r => { if (!ready(r.va)) r.va = ''; if (!ready(r.vb)) r.vb = ''; });
+
+  const tapeRows = (rows, isRes) => rows.map(r => {
+    const long = (r.va + r.vb).length > 34 ? ' long' : '';
+    const cls = r.h2h ? ' row-h2h' : '';
+    const rr = isRes || r.res;
+    return `<div class="va v${long}${cls}">${rr ? resHTML(r.va) : esc(r.va)}</div><div class="lb${cls}">${esc(r.label)}</div><div class="vb v${long}${cls}">${rr ? resHTML(r.vb) : esc(r.vb)}</div>`;
+  }).join('');
+
+  const fA = g.form[ia]?.seq || [], fB = g.form[ib]?.seq || [];
+  const satN = d === 'Mixed' ? 9 : 11;
+  const dots = seq => seq.map((x, i) => `<span class="${x}${i >= satN ? ' sun' : ''}">${x}</span>`).join('');
+
+  const notesFor = full => {
+    const key = Object.keys(g.notes).find(k => k === full) || Object.keys(g.notes).find(k => full.includes(k) || k.includes(shortName(full, d)));
+    return (key ? g.notes[key] : []).filter(ready).slice(0, 3);
+  };
+  const teamCard = (full, cls, w, s) => {
+    const nt = notesFor(full);
+    const wh = watchHTML(w), sy = sayHTML(s);
+    const body = [wh && `<div><div class="sub">Watch</div>${wh}</div>`, sy && `<div><div class="sub">Say it</div>${sy}</div>`, nt.length && `<div><div class="sub">Notes</div><ul class="notes">${nt.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`].filter(Boolean).join('');
+    if (!body) return '';
+    return `<section class="card tcard ${cls}"><h3>${esc(full)}</h3><div class="tbody">${body}</div></section>`;
+  };
+
+  const roundTxt = n === 4 ? g.round.replace(/\s*Read the two columns that apply\.?/i, '') : g.round;
+  return `
+    <div class="head">
+      <div class="eyebrow">${fmt12(g.time)} · Court 1 · Game ${g.no}</div>
+      <div class="round">${esc(n === 4 ? g.title.replace(/^.*Game \d+:\s*/, '') : roundTxt)}</div>
+      ${n === 4 ? `<div class="eyebrow">${esc(roundTxt)}</div>` : ''}
+    </div>
+    ${picker}
+    <div class="matchup"><div class="tn ta">${esc(sA)}${sA !== A ? `<small>${esc(A)}</small>` : ''}</div><span class="vs">v</span><div class="tn tb">${esc(sB)}${sB !== B ? `<small>${esc(B)}</small>` : ''}</div></div>
+    <div class="grid">
+      <div class="col">
+        <section class="card"><div class="tape">${tapeRows(stats, false)}</div></section>
+        ${(fA.length || fB.length) ? `<section class="card"><h3>Form, in order played</h3><div class="form">
+          <div class="frow a"><span class="fn">${esc(sA)}</span><div class="dots">${dots(fA)}</div></div>
+          <div class="frow b"><span class="fn">${esc(sB)}</span><div class="dots">${dots(fB)}</div></div></div></section>` : ''}
+        ${opp.length ? `<section class="card"><h3>Against the same teams</h3><div class="tape">${tapeRows(opp, true)}</div></section>` : ''}
+      </div>
+      <div class="col">
+        ${g.story.filter(ready).length ? `<section class="card"><h3>Storylines</h3><ul class="story">${g.story.filter(ready).slice(0, 2).map(x => `<li>${esc(x)}</li>`).join('')}</ul></section>` : ''}
+        ${teamCard(A, 'a', watch[0], say[0])}
+        ${teamCard(B, 'b', watch[1], say[1])}
+      </div>
+    </div>`;
+}
+function flip(v) {
+  const m = /^([WDL])\s+(\d+)-(\d+)$/.exec(v || '');
+  if (!m) return v;
+  return `${({ W: 'L', L: 'W', D: 'D' })[m[1]]} ${m[3]}-${m[2]}`;
+}
+
+function ladderHTML() {
+  const sat = DATA?.sat;
+  if (!sat) return '<div class="card soon-card"><p>Saturday ladders are not in the notes yet.</p></div>';
+  return `<div class="head"><div class="eyebrow">Saturday round robin</div><div class="round">Final ladders · tap a team for every result</div></div>
+  <div class="ladders">${['Ladies', 'Mixed'].map(div => `
+    <section class="card"><h3>${div}</h3>
+      <div class="ladder-head"><span>#</span><span>Team</span><span>W-D-L</span><span class="gd">GD</span><span class="pts">Pts</span></div>
+      ${sat[div].table.map(r => `
+        <button class="ladder-row" data-div="${div}" data-team="${esc(r.team)}" aria-expanded="false">
+          <span class="pos">${r.pos}</span><span class="nm">${esc(r.team)}</span>
+          <span class="num">${r.w}-${r.d}-${r.l}</span><span class="num gd">${esc(r.gd)}</span><span class="num pts">${r.w * 3 + r.d * 2}</span>
+        </button>
+        <div class="lres" hidden>${(sat[div].results[r.team] || []).map(x => `<span class="res ${x.r}"><b>${x.r}</b> ${x.f}-${x.a} <span class="opp">${esc(x.opp)}</span></span>`).join('')}</div>`).join('')}
+    </section>`).join('')}</div>`;
+}
+function bindLadder() {
+  document.querySelectorAll('.ladder-row').forEach(b => b.addEventListener('click', () => {
+    const p = b.nextElementSibling; p.hidden = !p.hidden; b.setAttribute('aria-expanded', String(!p.hidden));
+  }));
+}
+
+function tick() {
+  const n = nowPT();
+  const h = Math.floor(n / 60), m = n % 60;
+  document.getElementById('clock').textContent = `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')}`;
+  const nxt = slots.find(s => s.min > n);
+  const cur = slots.find(s => n >= s.min && n < s.min + 30);
+  document.getElementById('next').textContent = cur ? `G${cur.no} on now` : nxt ? `G${nxt.no} in ${nxt.min - n}m` : 'PT';
+}
+
+function fromHash() {
+  const h = (location.hash || '').replace('#', '');
+  if (h === 'ladder') return 'ladder';
+  const m = /^g(\d+)$/.exec(h);
+  if (m && slots.find(s => s.no === +m[1])) return +m[1];
+  return null;
+}
+window.addEventListener('hashchange', () => { const h = fromHash(); if (h !== null && h !== state.slot) go(h, true); });
+setInterval(() => { renderPills(); }, 60000);
+go(fromHash() ?? currentSlot().no, true);
+</script>
+
+</body>
+</html>
