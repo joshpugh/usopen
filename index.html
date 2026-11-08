@@ -357,7 +357,7 @@ function gameHTML(g) {
 
   const fA = g.form[ia]?.seq || [], fB = g.form[ib]?.seq || [];
   const satN = d === 'Mixed' ? 9 : 11;
-  const dots = seq => seq.map((x, i) => `<span class="${x}${i >= satN ? ' sun' : ''}">${x}</span>`).join('');
+  const dots = seq => seq.slice(0, satN).map(x => `<span class="${x}">${x}</span>`).join('');
 
   const notesFor = full => {
     const key = Object.keys(g.notes).find(k => k === full) || Object.keys(g.notes).find(k => full.includes(k) || k.includes(shortName(full, d)));
@@ -384,7 +384,7 @@ function gameHTML(g) {
     <section class="panel ${side}">
       <div class="pname">${esc(short)}${short !== full ? `<small>${esc(full)}</small>` : ''}</div>
       <div class="kpis">${kpis(side)}</div>
-      ${seq.length ? `<div><div class="sub">Form</div><div class="dots big">${dots(seq)}</div></div>` : ''}
+      ${seq.length ? `<div><div class="sub">Saturday round robin</div><div class="dots big">${dots(seq)}</div></div>` : ''}
       <div class="pbody">${teamBody(full, w, s)}</div>
     </section>`;
   const storyList = g.story.filter(ready).slice(0, 2);
@@ -411,7 +411,7 @@ function gameHTML(g) {
     <div class="grid">
       <div class="col">
         <section class="card"><div class="tape">${tapeRows(stats, false)}</div></section>
-        ${(fA.length || fB.length) ? `<section class="card"><h3>Form, in order played</h3><div class="form">
+        ${(fA.length || fB.length) ? `<section class="card"><h3>Saturday round robin, in order played</h3><div class="form">
           <div class="frow a"><span class="fn">${esc(sA)}</span><div class="dots">${dots(fA)}</div></div>
           <div class="frow b"><span class="fn">${esc(sB)}</span><div class="dots">${dots(fB)}</div></div></div></section>` : ''}
         ${opp.length ? `<section class="card"><h3>Against the same teams</h3><div class="tape">${tapeRows(opp, true)}</div></section>` : ''}
