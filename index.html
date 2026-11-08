@@ -117,6 +117,43 @@ main .wrap { padding-block: 16px 40px; }
 
 .embed { position: relative; width: 100%; aspect-ratio: 1557 / 80; overflow: hidden; background: #000; }
 .embed iframe { position: absolute; top: 0; left: 0; width: 1557px; height: 80px; border: 0; transform-origin: 0 0; transform: scale(var(--sbs, 1)); }
+
+/* Desk layout: laptop on the commentary desk, glance-down dashboard */
+.dash { display: none; }
+@media (min-width: 1024px) {
+  body { font-size: 17px; }
+  .wrap { max-width: none; padding-left: max(28px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px)); }
+  .pill .pt { font-size: 16px; } .pill .ps { font-size: 13px; }
+  main .wrap { padding-block: 14px 24px; }
+  .head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; }
+  .eyebrow { font-size: 15px; } .round { font-size: 18px; }
+  .mobile { display: none; }
+  .pick { max-width: 720px; }
+  .dash { display: grid; gap: 16px; }
+  .dstory { margin: 0; padding: 12px 18px 12px 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; font-size: 19px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  .dgrid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.05fr) minmax(0,1fr); gap: 24px; align-items: start; }
+  .panel { display: grid; gap: 16px; min-width: 0; padding: 16px 18px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; border-top: 4px solid var(--a); }
+  .panel.b { border-top-color: var(--b); }
+  .pname { font-size: 34px; font-weight: 600; line-height: 1.05; color: var(--a); }
+  .panel.b .pname { color: var(--b); }
+  .pname small { display: block; font-size: 15px; font-weight: 400; color: var(--muted); margin-top: 4px; }
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+  .kpi.wide { grid-column: 1 / -1; }
+  .kl { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .kv { font-size: 26px; font-weight: 500; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .kpi.wide .kv { font-size: 20px; }
+  .kv .res b { width: auto; margin-right: 4px; }
+  .dots.big { gap: 5px; }
+  .dots.big span { width: 26px; height: 26px; font-size: 12px; }
+  .pbody { display: grid; gap: 12px; font-size: 16px; }
+  .dmid { min-width: 0; }
+  .dmid h3 { margin: 0 0 6px; font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .dmid .tape > div { padding: 5px 0; }
+  .dmid .tape .v { font-size: 18px; }
+  .dmid .tape .lb { font-size: 13px; padding-top: 7px; }
+  .ladders { gap: 40px; }
+}
+@media (min-width: 1500px) { body { font-size: 18px; } .kv { font-size: 30px; } .pname { font-size: 40px; } .dstory { font-size: 21px; } }
 </style>
 </head>
 <body>
@@ -172,7 +209,7 @@ function nowPT() {
 }
 function currentSlot() {
   const n = nowPT();
-  const s = slots.find(s => n < s.min + 30);
+  const s = slots.find(s => n < s.min + 5);
   return s || slots[slots.length - 1];
 }
 
@@ -238,7 +275,7 @@ function renderPills(scroll) {
     const cls = ['pill', g ? '' : 'soon', s.min + 30 <= nowPT() ? 'done' : '', s.no === cur.no ? 'now' : ''].join(' ');
     return `<button class="${cls}" data-no="${s.no}" aria-current="${state.slot === s.no}"><span class="pt">${fmt12(s.time)} · G${s.no}</span><span class="ps">${esc(sub)}</span></button>`;
   }).join('') + `<button class="pill" data-no="ladder" aria-current="${state.slot === 'ladder'}"><span class="pt">Saturday</span><span class="ps">Ladders</span></button>`;
-  el.querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => go(b.dataset.no === 'ladder' ? 'ladder' : +b.dataset.no)));
+  el.querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => { state.picked = Date.now(); go(b.dataset.no === 'ladder' ? 'ladder' : +b.dataset.no); }));
   const active = el.querySelector('[aria-current="true"]');
   if (active && scroll) el.scrollLeft = active.offsetLeft - (el.clientWidth - active.offsetWidth) / 2;
 }
@@ -325,13 +362,40 @@ function gameHTML(g) {
     const key = Object.keys(g.notes).find(k => k === full) || Object.keys(g.notes).find(k => full.includes(k) || k.includes(shortName(full, d)));
     return (key ? g.notes[key] : []).filter(ready).slice(0, 3);
   };
-  const teamCard = (full, cls, w, s) => {
+  const teamBody = (full, w, s) => {
     const nt = notesFor(full);
     const wh = watchHTML(w), sy = sayHTML(s);
     const body = [wh && `<div><div class="sub">Watch</div>${wh}</div>`, sy && `<div><div class="sub">Say it</div>${sy}</div>`, nt.length && `<div><div class="sub">Notes</div><ul class="notes">${nt.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`].filter(Boolean).join('');
+    return body;
+  };
+  const teamCard = (full, cls, w, s) => {
+    const body = teamBody(full, w, s);
     if (!body) return '';
     return `<section class="card tcard ${cls}"><h3>${esc(full)}</h3><div class="tbody">${body}</div></section>`;
   };
+  const kpis = side => stats.map(r => {
+    const v = side === 'a' ? r.va : r.vb;
+    if (!v) return '';
+    const isRes = r.res || /^[WDL]\s/.test(v);
+    return `<div class="kpi${/goals/i.test(r.label) ? ' wide' : ''}"><div class="kl">${esc(r.label)}</div><div class="kv">${isRes ? resHTML(v) : esc(v)}</div></div>`;
+  }).join('');
+  const panel = (full, short, side, seq, w, s) => `
+    <section class="panel ${side}">
+      <div class="pname">${esc(short)}${short !== full ? `<small>${esc(full)}</small>` : ''}</div>
+      <div class="kpis">${kpis(side)}</div>
+      ${seq.length ? `<div><div class="sub">Form</div><div class="dots big">${dots(seq)}</div></div>` : ''}
+      <div class="pbody">${teamBody(full, w, s)}</div>
+    </section>`;
+  const storyList = g.story.filter(ready).slice(0, 2);
+  const dash = `
+    <div class="dash">
+      ${storyList.length ? `<ul class="dstory">${storyList.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      <div class="dgrid">
+        ${panel(A, sA, 'a', fA, watch[0], say[0])}
+        ${opp.length ? `<section class="dmid"><h3>Against the same teams</h3><div class="tape">${tapeRows(opp, true)}</div></section>` : '<div></div>'}
+        ${panel(B, sB, 'b', fB, watch[1], say[1])}
+      </div>
+    </div>`;
 
   const roundTxt = n === 4 ? g.round.replace(/\s*Read the two columns that apply\.?/i, '') : g.round;
   return `
@@ -341,6 +405,7 @@ function gameHTML(g) {
       ${n === 4 ? `<div class="eyebrow">${esc(roundTxt)}</div>` : ''}
     </div>
     ${picker}
+    <div class="mobile">
     <div class="matchup"><div class="tn ta">${esc(sA)}${sA !== A ? `<small>${esc(A)}</small>` : ''}</div><span class="vs">v</span><div class="tn tb">${esc(sB)}${sB !== B ? `<small>${esc(B)}</small>` : ''}</div></div>
     <div class="grid">
       <div class="col">
@@ -355,7 +420,9 @@ function gameHTML(g) {
         ${teamCard(A, 'a', watch[0], say[0])}
         ${teamCard(B, 'b', watch[1], say[1])}
       </div>
-    </div>`;
+    </div>
+    </div>
+    ${dash}`;
 }
 function flip(v) {
   const m = /^([WDL])\s+(\d+)-(\d+)$/.exec(v || '');
@@ -401,8 +468,13 @@ function fromHash() {
   return null;
 }
 window.addEventListener('hashchange', () => { const h = fromHash(); if (h !== null && h !== state.slot) go(h, true); });
-setInterval(() => { renderPills(); }, 60000);
-go(fromHash() ?? currentSlot().no, true);
+setInterval(() => {
+  const d = currentSlot().no;
+  if (state.auto !== d && Date.now() - (state.picked || 0) > 10 * 60000 && state.slot !== 'ladder') { state.auto = d; go(d); }
+  else renderPills();
+}, 30000);
+state.auto = currentSlot().no;
+go(currentSlot().no);
 </script>
 
 </body>
